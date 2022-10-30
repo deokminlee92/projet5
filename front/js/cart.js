@@ -64,7 +64,7 @@ fetch('http://localhost:3000/api/products')
         listeCanape += '</div>';
         listeCanape += '</div>';
         listeCanape += '</article>';
-      }
+
 
       // Injection du nouveau code html dans le DOM
       document.querySelector('#cart__items').innerHTML = listeCanape;
@@ -168,5 +168,8 @@ fetch('http://localhost:3000/api/products')
       }
         const reducer = (accumulator, currentValue) => accumulator + currentValue;
         const totalCanap = totalArticles.reduce(reducer);
-        
+    }
+  }
+});
+
         // Injection du nouveau code html "quantité totale d'articles" dans le DOM
