@@ -122,6 +122,9 @@ fetch('http://localhost:3000/api/products')
             validation()
         }
       // Si des produits sont déjà présents dans localstorage
+
+        
+
         else if (canapeDansLocalstorage != null) {
         // Dans LS, variable i qui sert de compteur pour le nb d'exécution de la boucle.
         // si une quantité variable i est déjà présente , i va faire un rôle de compteur
@@ -136,13 +139,13 @@ fetch('http://localhost:3000/api/products')
                 }
             }
 
-            /*const totalCanapeAdd = 100;
+            /*//////////////const totalCanapeAdd = 100;
             for (let i = 0; i < canapeDansLocalstorage.length; i++) {
                 if(totalCanapeAdd < canapeDansLocalstorage[i]._id == id && canapeDansLocalstorage[i].couleur == couleurSelectionnee){
                     alert("non");
                     return false;
                 }
-            }*/
+            }*/////////////////////////
 
             // Si des canapés ayant le même id ou la même couleur ne sont pas présents dans le localStorage
             for (i = 0; i < canapeDansLocalstorage.length; i++) {
@@ -154,8 +157,6 @@ fetch('http://localhost:3000/api/products')
                     )
                 }
             }  
-
-            
         }
     }
 })

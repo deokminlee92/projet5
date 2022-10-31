@@ -26,6 +26,8 @@ fetch('http://localhost:3000/api/products')
         listeCanape += `<h2>${canape.titre}</h2>`;
         listeCanape += `<p>${canape.couleur}</p>`;
 
+
+
         // Affichage du prix du canapé
 
         function prixCanapes () {
@@ -51,7 +53,7 @@ fetch('http://localhost:3000/api/products')
         }
 
         totalPrixCanapes()
-
+/*
         listeCanape += '</div>';
         listeCanape += '<div class="cart__item__content__settings"></div>'
         listeCanape += '<div class="cart__item__content__settings__quantity">'
@@ -64,7 +66,7 @@ fetch('http://localhost:3000/api/products')
         listeCanape += '</div>';
         listeCanape += '</div>';
         listeCanape += '</article>';
-
+ */
 
       // Injection du nouveau code html dans le DOM
       document.querySelector('#cart__items').innerHTML = listeCanape;
