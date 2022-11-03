@@ -80,9 +80,9 @@ fetch('http://localhost:3000/api/products')
 
     // Déclaration variable buttonClick qui permet de récupérer l'article ajouté au click 
 
-        let buttonClick = document.getElementById("addToCart");
+        
     // Click 을 통해서 함수 안 값을 불러옴
-    buttonClick.addEventListener('click', () => {
+    document.getElementById("addToCart").onclick = function() {
         // Création des variables pour la quantité de canapés et la couleur choisie
         // 여기서 id,couleur,quantite 를 API 간단하게 불러올 수 있도록 미리 선작업을 쳐준 후 밑에서 
             let checkColor = document.getElementById('colors');
@@ -99,7 +99,7 @@ fetch('http://localhost:3000/api/products')
                 altImage,
             };
         // Créer une variable qui récupère le LS
-            let panier = JSON.parse(localStorage.getItem("getAddedToCart"));
+            let panierLocalStorage = JSON.parse(localStorage.getItem("getAddedToCart"));
 
         //만약 색상 값을 선택하지 않았을 때 
             if (selectedCanapeOption.selectedColor === "") {
@@ -114,36 +114,50 @@ fetch('http://localhost:3000/api/products')
 
         // Message de confirmation , clic "oui" -> Paner, clic "non" -> page d'accueil
             let messageConfirmation = function(){
-                if(window.confirm( `${selectedQuantity} ${titre} ${selectedColor} ajouté dans le panier.
-                click "oui" pour continuer vos achat, "non" pour consulter votre panier`)){
+                if(window.confirm( `${selectedQuantity} ${titre} ${selectedColor} ajouté dans le panierLocalStorage.
+                click "oui" pour continuer vos achat, "non" pour consulter votre panierLocalStorage`)){
                     window.location.href = "index.html";
                 }else{
                     window.location.href = "cart.html";
                 }
             }
-            messageConfirmation();
         
-        //On vérifie si le panier existe//
-            if(panier){
-                //Recherche des infos d'id et de couleur pour vérifier s'il y a déjà un produit identique dans le LS//
-                let findProduct = panier.find( p => p.id == selectedCanapeOption.id && p.selectedColor == selectedCanapeOption.selectedColor);
-                //S'il y en a, on incrémente la quantite
-                if(findProduct){
-                    let newAddedProduct = findProduct.selectedQuantity + selectedCanapeOption.selectedQuantity;
-                    findProduct.selectedQuantity =newAddedProduct;
-                    /*Envoyer les données au LS puis sérialiser les donnés */
-                    localStorage.setItem("getAddedToCart", JSON.stringify(panier));
-                    /*Messagde Ajout ok */
-                    alert("ok ajouté");
-                    /*Si on ajoute un nouveau produit */
-                }else{ 
-                    panier.push(selectedCanapeOption);
-                    localStorage.setItem("getAddedToCart", JSON.parse(panier));
+        //si le LS est vide, []
+            if (panierLocalStorage == null){
+                panierLocalStorage = [];
+                panierLocalStorage.push(selectedCanapeOption);
+                localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage));
+                messageConfirmation();
+            }
+        
+        //On vérifie si le panierLocalStorage existe//
+            else if(panierLocalStorage != null){
+            //Recherche des infos d'id et de couleur pour vérifier s'il y a déjà un produit identique dans le LS//
+            let findProduct = panierLocalStorage.find( p => p.id == selectedCanapeOption.id && p.selectedColor == selectedCanapeOption.selectedColor);
+            //S'il y en a, on incrémente la quantite
+            if(findProduct){
+                let newAddedProduct = findProduct.selectedQuantity + selectedCanapeOption.selectedQuantity;
+                findProduct.selectedQuantity =newAddedProduct;
+                /*Envoyer les données au LS puis sérialiser les donnés */
+                localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage));
+                /*Messagde Ajout ok */
+                alert("ok ajouté");
+                /*Si on ajoute un nouveau produit */
+                }else{
+                    panierLocalStorage = [];
+                    panierLocalStorage.push(selectedCanapeOption);
+                    localStorage.setItem("getAddedToCart", JSON.parse(panierLocalStorage)); 
                 }
             }
+        }
+    });
+
+    
+            
+    
 
 
-            // Enregistrer le panier , le produit enregistré en objet dans localstorage sera seréalisé associé à une clé toAdd//
+            // Enregistrer le panierLocalStorage , le produit enregistré en objet dans localstorage sera seréalisé associé à une clé toAdd//
 
                 /*문법:     JSON.stringify(value[, replacer[, space]])
                 value: JSON 문자열로 변환할 값
@@ -156,10 +170,6 @@ fetch('http://localhost:3000/api/products')
                 //parse : localStorage n'est pas capable d'enregistrer des types complexes, il enregistre tout string 
                 //c pourquoi il fait les sérialiser (transofrmer en chaîne de caractère = JSON)
 
-        });
-})
-
-        
 
 
 
@@ -183,7 +193,7 @@ fetch('http://localhost:3000/api/products')
         // Message d'erreur si la couleur n'est pas sélectionnée
 
 
-      //Fenêtre qui confirme l'ajout des canapés dans le panier et qui permet de se rendre sur la page d'accueil en cliquant sur "Annuler" ou d'aller au panier en cliquant sur "OK"
+      //Fenêtre qui confirme l'ajout des canapés dans le panierLocalStorage et qui permet de se rendre sur la page d'accueil en cliquant sur "Annuler" ou d'aller au panierLocalStorage en cliquant sur "OK"
         //arrow function , {} 안에 있는 expression 을 반환한다.
 
       // Si aucun produit n'est présent dans localstorage
