@@ -102,12 +102,12 @@ fetch('http://localhost:3000/api/products')
             let panierLocalStorage = JSON.parse(localStorage.getItem("getAddedToCart"));
 
         //만약 색상 값을 선택하지 않았을 때 
-            if (selectedCanapeOption.selectedColor === "") {
+            if (selectedColor == "--SVP, choisissez une couleur --") {
                 alert("Veuillez selectionner une couleur");
                 return false;
             }
         //만약 수량 값을 선택하지 않았을 때 
-            if (selectedCanapeOption.selectedQuantity > 100 || selectedCanapeOption.selectedQuantity < 1 ) {
+            if (selectedQuantity > 100 || selectedQuantity < 1 ) {
                 alert("1-100 svp");
                 return false;
             }
@@ -127,22 +127,47 @@ fetch('http://localhost:3000/api/products')
                 panierLocalStorage = [];
                 panierLocalStorage.push(selectedCanapeOption);
                 localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage));
-                messageConfirmation();
+                messageConfirmation()
             }
-        
+/*
+                else if(panierLocalStorage != null){
+                    //si le LS n'est pas vide, on recherche le produit
+                    for(i=0; 1 < selectedCanapeOption.length; i++) {
+                        // si le produit déjà présent dans LS = le produit selectionné a le même couleur
+                        if(panierLocalStorage[i]._id == id && panierLocalStorage[i].couleur == selectedColor){
+                            return(
+                                localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage)),
+                                messageConfirmation()
+                            )
+                        }
+                    }
+                }
+
+                for(i=0; 1 < selectedCanapeOption.length; i++) {
+                    // si le produit déjà présent dans LS = le produit selectionné a le même couleur
+                    if(panierLocalStorage[i]._id != id && panierLocalStorage[i].couleur != selectedColor){
+                        return(
+                            panierLocalStorage.push(selectedCanapeOption),
+                            localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage)),
+                            messageConfirmation()
+                        )
+                    }
+                }*/
+                
+
         //On vérifie si le panierLocalStorage existe//
             else if(panierLocalStorage != null){
             //Recherche des infos d'id et de couleur pour vérifier s'il y a déjà un produit identique dans le LS//
             let findProduct = panierLocalStorage.find( p => p.id == selectedCanapeOption.id && p.selectedColor == selectedCanapeOption.selectedColor);
-            //S'il y en a, on incrémente la quantite
+            //S'il y en a, on incrémente la quantite//
             if(findProduct){
                 let newAddedProduct = findProduct.selectedQuantity + selectedCanapeOption.selectedQuantity;
                 findProduct.selectedQuantity =newAddedProduct;
-                /*Envoyer les données au LS puis sérialiser les donnés */
+                //Envoyer les données au LS puis sérialiser les donnés //
                 localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage));
-                /*Messagde Ajout ok */
+                //Messagde Ajout ok //
                 alert("ok ajouté");
-                /*Si on ajoute un nouveau produit */
+                // Si on ajoute un nouveau produit //
                 }else{
                     panierLocalStorage = [];
                     panierLocalStorage.push(selectedCanapeOption);
