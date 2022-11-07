@@ -6,173 +6,135 @@
 fetch('http://localhost:3000/api/products')
 
     .then(function(reponse) {
-    if (reponse.ok) {
-      return reponse.json();
-    }
-  })
+        if (reponse.ok) {
+        return reponse.json();
+        }
+    })
 /*Paramètre : données */
-  .then(function(productInfo) {
-    let urlcourante = document.location.href;
-    let url = new URL(urlcourante)
-    // Récupération de l'ID dans l'url
-    let id = url.searchParams.get("id");
-    /*Déclaration des images de produits sans valeur */
-    let canapePicture = '';
+    .then(function(productInfo) {
+        // Récupération de l'ID dans l'url
+        let urlcourante = document.location.href;
+        let url = new URL(urlcourante);
+        // Récupération de l'ID dans l'url
+        let id = url.searchParams.get("id");
+        let canapePicture = ''
 
     // Création des variables prix, titre, description, image, altImage
-    /* function 함수이름 (매개변수1 2 3 ){
-        함수가 호출 되었을 때 실행하고자 하는 실행문  ,  매개변수가 없어도 자동 할당하므로 ㄱㅊ
-    } */
-    function donnesVariable () {
-    // parametre va parcourir le tableau productInfo
-        for(let canape of productInfo) {
-            /*Si canape.id == id  , on récupère les id/class dans product.html*/
-            if (canape._id == id){
-                titre = canape.name;
-                prix = canape.price;
-                image = canape.imageUrl;
-                description = canape.description;
-                altImage = canape.altTxt;
+        function donnesVariable () {
+        for (let canape of productInfo) {
+            if (canape._id == id) {
+            prix = canape.price;
+            titre = canape.name;
+            description = canape.description;
+            image = canape.imageUrl;
+            altImage = canape.altTxt;
 
-            // Création du lien pour récupérer l'image associée
-                canapePicture = `<img src="${image}" alt="${altImage}">`;
-                
+          // Création du lien vers l'image du canapé
 
-            // Fonction ajout des couleurs dans le menu déroulant des couleurs du canapé
-            function addingCanapeColorList (){
-            //Récupération des couleurs 
-                let colorListDropMenu = document.getElementById("colors");
-            //Parcourir les couleurs dans le tableau canape.colors
-                for (let couleur of canape.colors){
-            //Méthode, Création nouvel élément "option" dans product.html
-                    let canapeColorList=document.createElement('option');
-                    //Ajout un nouvel attribut nommé "value" et la valeur "couleur"// 
-                    /*<!--<option value="vert">vert</option>*/
-                        canapeColorList.setAttribute("value", couleur);
-                        canapeColorList.innerHTML = couleur;
-                    //Méthode , ajout liste de couleurs
-                        colorListDropMenu.appendChild(canapeColorList);
-                        }
+            canapePicture += `<img src="${image}" alt="${altImage}">`;
+
+          // Fonction ajout des couleurs dans le menu déroulant des couleurs du canapé
+        function addingCanapeColorList() {
+            var colorListDropMenu=document.getElementById("colors");
+            for (let couleur of canape.colors) {
+                var canapeColorList=document.createElement('option');
+                canapeColorList.setAttribute("value", couleur);
+                canapeColorList.innerHTML=couleur;
+                colorListDropMenu.appendChild(canapeColorList);
                     }
-                    addingCanapeColorList ();
                 }
+                addingCanapeColorList();
             }
         }
-    
+    }
     donnesVariable()
 
-            // Fonction injection du nouveau code html dans le DOM
-            function InjectionHtmlDom (){
-                //<h1 id="title"><!-- Nom du produit --></h1>//
-                document.querySelector('#title').innerHTML = titre;
-                /*<p>Prix : <span id="price"><!-- 42 --></span>€</p>*/   
-                //toFixed : 3번째 값을 반올림해서 두번째 자리 수 까지만 표기   
-                document.querySelector('#price').innerHTML = prix.toFixed(2);
-                // id .item__img --> imageCanape , querySelector : Recherche le propriété id 
-                //<div class="item__img">
-                document.querySelector(".item__img").innerHTML = canapePicture;
-                /*p id="description"><!-- Dis enim malesuada risus sapien gravida nulla nisl arcu. --></p>*/
-                document.querySelector('#description').innerHTML = description;
-
-            }
-            InjectionHtmlDom ();
-
-
-    // Déclaration variable buttonClick qui permet de récupérer l'article ajouté au click 
-
-        
-    // Click 을 통해서 함수 안 값을 불러옴
-    document.getElementById("addToCart").onclick = function() {
-        // Création des variables pour la quantité de canapés et la couleur choisie
-        // 여기서 id,couleur,quantite 를 API 간단하게 불러올 수 있도록 미리 선작업을 쳐준 후 밑에서 
-            let checkColor = document.getElementById('colors');
-            let selectedColor = checkColor.options[checkColor.selectedIndex].text;
-            const selectedQuantity = document.getElementById('quantity').value;
-
-            let selectedCanapeOption ={
-                _id : id,
-                couleur : selectedColor,
-                quantite : parseInt(selectedQuantity),
-                titre,
-                description,
-                image,
-                altImage,
-            };
-        // Créer une variable qui récupère le LS
-            let panierLocalStorage = JSON.parse(localStorage.getItem("getAddedToCart"));
-
-        //만약 색상 값을 선택하지 않았을 때 
-            if (selectedColor == "--SVP, choisissez une couleur --") {
-                alert("Veuillez selectionner une couleur");
-                return false;
-            }
-        //만약 수량 값을 선택하지 않았을 때 
-            if (selectedQuantity > 100 || selectedQuantity < 1 ) {
-                alert("1-100 svp");
-                return false;
-            }
-
-        // Message de confirmation , clic "oui" -> Paner, clic "non" -> page d'accueil
-            let messageConfirmation = function(){
-                if(window.confirm( `${selectedQuantity} ${titre} ${selectedColor} ajouté dans le panierLocalStorage.
-                click "oui" pour continuer vos achat, "non" pour consulter votre panierLocalStorage`)){
-                    window.location.href = "index.html";
-                }else{
-                    window.location.href = "cart.html";
-                }
-            }
-        
-        //si le LS est vide, []
-            if (panierLocalStorage == null){
-                panierLocalStorage = [];
-                panierLocalStorage.push(selectedCanapeOption);
-                localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage));
-                messageConfirmation()
-            }
-/*
-                else if(panierLocalStorage != null){
-                    //si le LS n'est pas vide, on recherche le produit
-                    for(i=0; 1 < selectedCanapeOption.length; i++) {
-                        // si le produit déjà présent dans LS = le produit selectionné a le même couleur
-                        if(panierLocalStorage[i]._id == id && panierLocalStorage[i].couleur == selectedColor){
-                            return(
-                                localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage)),
-                                messageConfirmation()
-                            )
-                        }
-                    }
-                }
-
-                for(i=0; 1 < selectedCanapeOption.length; i++) {
-                    // si le produit déjà présent dans LS = le produit selectionné a le même couleur
-                    if(panierLocalStorage[i]._id != id && panierLocalStorage[i].couleur != selectedColor){
-                        return(
-                            panierLocalStorage.push(selectedCanapeOption),
-                            localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage)),
-                            messageConfirmation()
-                        )
-                    }
-                }*/
-                
-
-        //On vérifie si le panierLocalStorage existe//
-            else if(panierLocalStorage != null){
-            //Recherche des infos d'id et de couleur pour vérifier s'il y a déjà un produit identique dans le LS//
-            let findProduct = panierLocalStorage.find( p => p.id == selectedCanapeOption.id && p.selectedColor == selectedCanapeOption.selectedColor);
-            //S'il y en a, on incrémente la quantite//
-            if(findProduct){
-                let newAddedProduct = findProduct.selectedQuantity + selectedCanapeOption.selectedQuantity;
-                findProduct.selectedQuantity =newAddedProduct;
-                //Envoyer les données au LS puis sérialiser les donnés //
-                localStorage.setItem("getAddedToCart", JSON.stringify(panierLocalStorage));
-                //Messagde Ajout ok //
-                alert("ok ajouté");
-                // Si on ajoute un nouveau produit //
-                }else{
-                    panierLocalStorage = [];
-                    panierLocalStorage.push(selectedCanapeOption);
-                    localStorage.setItem("getAddedToCart", JSON.parse(panierLocalStorage)); 
-                }
-            }
+    // Fonction injection du nouveau code html dans le DOM
+    function InjectionHtmlDom() {
+        document.querySelector(".item__img").innerHTML = canapePicture;
+        document.querySelector('#title').innerHTML = titre;
+        document.querySelector('#price').innerHTML = prix.toFixed(2);
+        document.querySelector('#description').innerHTML = description;
         }
-    });
+    
+    InjectionHtmlDom();
+        
+        // Exécution du code au clic sur le bouton "Ajouter au panier"
+        document.getElementById("addToCart").onclick = function () {
+        // Création des variables pour la quantité de canapés et la couleur choisie
+        var checkColor = document.getElementById("colors");
+        var selectedColor = checkColor.options[checkColor.selectedIndex].text;
+        const selectedQuantity = document.getElementById("quantity").value;
+
+      // Création d'un objet pour injection dans le localStorage clé "canapes"
+    let selectedCanapeOption = {
+        _id: id,
+        couleur: selectedColor,
+        quantite: parseInt(selectedQuantity),
+        titre,
+        description,
+        image,
+        altImage
+    };
+
+      // Local storage
+      // stockage de l'id, de la couleur, de la quantité de canapés, du titre, de la description, de l'url de l'image et de l'altImage
+      // JSON.parse pour convertir les données au format JSON en objet javascript
+    let panierLocalStorage = JSON.parse(localStorage.getItem("canapes"));
+
+      // Message d'erreur si la quantité est inférieure à 1 ou supéreure à 100
+    if(selectedQuantity <= 0 || selectedQuantity >= 101) {
+        alert("Veuillez entrer une valeur minimum 1 et maximum 100");
+        return false;
+    }
+
+      // Message d'erreur si la couleur n'est pas sélectionnée
+    if(selectedColor == "--SVP, choisissez une couleur --") {
+        alert("Veuillez sélectionner une couleur dans ce menu déroulant");
+        return false;
+    }
+
+
+      //Fenêtre qui confirme l'ajout des canapés dans le panier et qui permet de se rendre sur la page d'accueil en cliquant sur "Annuler" ou d'aller au panier en cliquant sur "OK"
+    const validation = () => {
+        if(window.confirm( `canapé: ${titre} couleur: ${selectedColor} quantité: ${selectedQuantity} a bien été ajouté au panier.
+        Pour consulter le panier, appuyez sur OK sinon appuyez sur ANNULER pour revenir à l'accueil et continuer vos achats.`)){
+            window.location.href = "cart.html";
+        }else{
+            window.location.href = "index.html";
+        }
+    }
+
+    // Si aucun produit n'est présent dans localstorage
+    if (panierLocalStorage == null) {
+        panierLocalStorage = [];
+        panierLocalStorage.push(selectedCanapeOption);
+        localStorage.setItem("canapes", JSON.stringify(panierLocalStorage));
+        validation()
+    }
+    // Si des produits sont déjà présents dans localstorage
+    else if (panierLocalStorage != null) {
+        for (i = 0; i < panierLocalStorage.length; i++) {
+            // Si des canapés ayant le même id et la même couleur sont déjà présent dans le localStorage
+            if (panierLocalStorage[i]._id == id && panierLocalStorage[i].couleur == selectedColor) {
+                return(
+                    panierLocalStorage[i].quantite = parseInt(selectedQuantity) + parseInt(panierLocalStorage[i].quantite),
+                    localStorage.setItem("canapes", JSON.stringify(panierLocalStorage)),
+                    validation()
+                    )
+                }
+            }
+        // Si des canapés ayant le même id ou la même couleur ne sont pas présents dans le localStorage
+        for (i = 0; i < panierLocalStorage.length; i++) {
+            if (panierLocalStorage[i]._id != id || panierLocalStorage[i].couleur != selectedColor) {
+                return(
+                    panierLocalStorage.push(selectedCanapeOption),
+                    localStorage.setItem("canapes", JSON.stringify(panierLocalStorage)),
+                    validation()
+                    )
+                }
+            }  
+        }
+    }
+})
+    .catch(err => console.log("Erreur : " + err));
