@@ -63,7 +63,7 @@ fetch('http://localhost:3000/api/products')
         document.getElementById("addToCart").onclick = function () {
         // Création des variables pour la quantité de canapés et la couleur choisie
         var checkColor = document.getElementById("colors");
-        var selectedColor = checkColor.options[checkColor.selectedIndex].text;
+        let selectedColor = checkColor.options[checkColor.selectedIndex].text;
         const selectedQuantity = document.getElementById("quantity").value;
 
       // Création d'un objet pour injection dans le localStorage clé "canapes"
@@ -126,6 +126,7 @@ fetch('http://localhost:3000/api/products')
             }
         // Si des canapés ayant le même id ou la même couleur ne sont pas présents dans le localStorage
         for (i = 0; i < panierLocalStorage.length; i++) {
+            //|| : une condition sur 2 est ok,  si id dans LS n'est pas de même couleur que le produit choisi//
             if (panierLocalStorage[i]._id != id || panierLocalStorage[i].couleur != selectedColor) {
                 return(
                     panierLocalStorage.push(selectedCanapeOption),
