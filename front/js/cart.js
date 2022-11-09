@@ -38,42 +38,55 @@ fetch('http://localhost:3000/api/products/')
             </div>`
 
     // Affichage du prix du canapé //
-    function priceCanape (){
+    function affichagePriceCanape (){
+        // Déclarer une variable 
         let priceCanapeEach = '';
+            // Recherche du prix du canapé dans l'API//
             for(i=0; 1<productInfo.lenght; i++){
-            // Recherche du prix du canapé dans l'API
+            // Recherche le même produit id dans //
             if(productInfo[i].id === canape.id){
+                //Créer une variable pour injecter le prix du canape correspondant//
                 costCanape = productInfo[i].price;
+                //Créer une variable pour injecter le prix//
                 canapeList += `<p>${costCanape.toFixed(2)}</p>`
-            // Calcul du prix total en faisnat le produit de la quantité par le prix
-            priceAndQuantity = parseInt(productInfo[i].price) * parseInt(canape.quantite);
-            totalProductPrice.push(priceAndQuantity);
+                // Calcul du prix total en faisant le produit de la quantité par le prix//
+                //parseInt=chaîne de caractère se transforme en chiffre//
+                priceCanapeEach = parseInt(productInfo[i].price) * parseInt(canape.quantite);
+                totalProductPrice.push(priceCanapeEach);
+                    }
                 }
             }
-        }
-            priceCanape ()
+        affichagePriceCanape ()
 
         // Calcul de la somme des valeurs présentes dans le tableau "prixTotal" et injection du résultat dans le DOM
-
-
+    function affichageTotalPriceCanape (){
+        //accumulator : prix cumulé , currentValue : nouveau prix ajouté
+        let accmulatedTotalPrice = (accumulator, currentValue) => accumulator + currentValue;
+        //reduce = méthode, prix total cumulé de tous les produits ajouté //
+        let totalPrix = totalProductPrice.reduce(accmulatedTotalPrice);
+        // injection du prix //
+        document.querySelector("totalPrice").innerHTML = totalPrix.toFixed(2);
+    }
+        affichageTotalPriceCanape ()
         
-        // Injection du nouveau code html dans le DOM
+    canapeList += `<div class="cart__item__content__settings">
+        <div class="cart__item__content__settings__quantity">
+            <p>Qté : </p>
+            <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${canape.quantite}">;
+        </div>
+        <div class="cart__item__content__settings__delete">
+            <p class="deleteItem">Supprimer</p>
+        </div>
+        </div>
+    </div>
+    </article>`
+
+
+
+              // Injection du nouveau code html dans le DOM
         // Création d'un tableau products contenant les id des produits dans le panier pour effectuer la requête POST sur l’API
 
 
-
-
-            /*`<div class="cart__item__content__settings">
-            <div class="cart__item__content__settings__quantity">
-              <p>Qté : </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
-            </div>
-            <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Supprimer</p>
-            </div>
-          </div>
-        </div>
-      </article> `*/
         }
     }        
 })
