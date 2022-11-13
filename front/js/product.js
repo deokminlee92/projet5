@@ -53,7 +53,7 @@ fetch('http://localhost:3000/api/products')
     function InjectionHtmlDom() {
         document.querySelector(".item__img").innerHTML = canapePicture;
         document.querySelector('#title').innerHTML = titre;
-        document.querySelector('#price').innerHTML = prix.toFixed(2);
+        document.querySelector('#price').innerHTML = prix;
         document.querySelector('#description').innerHTML = description;
         }
     
