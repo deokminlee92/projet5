@@ -1,5 +1,7 @@
 /* instruction = statement , séparée par ; */
 /* let,var,const : déclaration de variable , nom symbolique*/
+/**() => {} function callback*/
+
 
 // Requète de l'API
 
