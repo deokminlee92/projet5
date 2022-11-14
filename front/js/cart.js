@@ -148,6 +148,84 @@ function deleteProductDansPanier (){
             })
         }
         deleteProductDansPanier()
+
+    
+    //---------------------------------Fin du btn Supprimer-----------------------------------//
+
+    //---------------------------------Manipuler la quantité-----------------------------------//
+
+    /*Target HTML code 
+/* <div class="cart__item__content__settings__quantity">
+    <p>Qté : </p>
+    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+</div>*/
+
+    // possibilite : Saisir 0 dans la quantité
+    // méthode, Créer une variable qui retournera les éléments trouvés correspondant à ".itemQuantity"//
+    let zeroQuantity = document.querySelectorAll(".itemQuantity");
+    //utiliser forEach() pour exécuter une fonction ddonnée sur chaque élément du tableau//
+    zeroQuantity.forEach((callbackZeroQuantity) => 
+    {
+        callbackZeroQuantity.addEventListener("change", () =>
+        {
+            //Déclarer une variable pour exécuter une recherche la balise parent <article>
+            let rechercheIdToDelete = callbackZeroQuantity.closest("article");
+            //créer une varible pour calculer un nombre de type de canapées présents dans le tableau produitDansLocalStorage //  
+            let savedProductNumber = produitDansLocalStorage.length;
+            //Si la valeur saisis est 0 et qu'un seul type de canapé est présent dans LS
+            if(zeroQuantity.value == 0 && savedProductNumber == 1){
+                //supression de la clé "canapé" du LS//
+                return(localStorage.removeItem("canapes")),
+                location.reload()
+            }
+            //si la valeur saisie est 0 mais plusieurs types de canapés sont présents dans LS
+            else if(zeroQuantity.value == 0 && savedProductNumber > 1) {
+                creatArrayMultiProducts = CreationNewProductId.filter((cana) =>
+                {
+                    if(rechercheIdToDelete.dataset.id != cana._id || rechercheIdToDelete.color != cana.couleur){
+                        return true;
+                    }
+                });
+                localStorage.setItem("canapes", JSON.stringify(creatArrayMultiProducts));
+                location.reload();
+            }
+            // Modifier la quantité dans la case saisie//
+            else if(callbackZeroQuantity.value > 0 ){
+                for(i = 0; i < produitDansLocalStorage.length; i++ ){
+                    if(rechercheIdToDelete.dataset.id == produitDansLocalStorage[i]._id && rechercheIdToDelete.dataset.color == produitDansLocalStorage[i].couleur){
+                        produitDansLocalStorage.quantite = parseInt(callbackZeroQuantity.value);
+                            if(produitDansLocalStorage[i].quantite <= 0  || produitDansLocalStorage[i].quantite < 100) {
+                                alert("Veuillez entrer une valeur min 1 et max 100");
+                                return false;
+                            }
+                                localStorage.setItem("canapes", JSON.stringify(produitDansLocalStorage));
+                                location.reload();
+                    }
+                }
+            }
+        });
+    });
+//Utilisrer eventListener 'change'
+/* elment.eventListener('change', function(){
+   handle change 
+});
+
+// input type, 
+*/
+
+    //calcul de la quantité totale d'articles présents dans le panier
+    let totalArticlePresent = [];
+    for(i=0; i < produitDansLocalStorage.length; i++){
+        let totalNumberCanape = produitDansLocalStorage[i].quantite;
+        totalArticlePresent.push(totalNumberCanape);
+
+    }
+    
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    const totalCanapes = totalArticlePresent.reduce(reducer);
+    document.querySelector('#totalQuantity').innerHTML = totalCanapes;
+    console.log(totalCanapes);
+
     }
 })
 
