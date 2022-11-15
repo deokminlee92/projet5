@@ -195,7 +195,7 @@ function deleteProductDansPanier (){
                     if(rechercheIdToDelete.dataset.id == produitDansLocalStorage[i]._id && rechercheIdToDelete.dataset.color == produitDansLocalStorage[i].couleur){
                         produitDansLocalStorage.quantite = parseInt(callbackZeroQuantity.value);
                             if(produitDansLocalStorage[i].quantite <= 0  || produitDansLocalStorage[i].quantite < 100) {
-                                alert("Veuillez entrer une valeur min 1 et max 100");
+                                alert("Veuillez entrer une valeur entre 1 et 100");
                                 return false;
                             }
                                 localStorage.setItem("canapes", JSON.stringify(produitDansLocalStorage));
@@ -207,7 +207,7 @@ function deleteProductDansPanier (){
     });
 //Utilisrer eventListener 'change'
 /* elment.eventListener('change', function(){
-   handle change 
+handle change 
 });
 
 // input type, 
@@ -227,7 +227,73 @@ function deleteProductDansPanier (){
     console.log(totalCanapes);
 
     }
+
+    // il faut modifier la fonction modification car elle ne fonctionne pas correctement//
+    //---------------------------------Fin quantité-----------------------------------//
+
+    //***************************Formulaire de commande***************************//
+
+//Déclarer les variables de regex//
+/* Nom & Prénom */
+const regexFirstLastName = new RegExp (/^[a-z A-Zàâäéèêëïîôöùûüç-]{2,25}$/);
+/*Adresse mail*/
+const regexEmail = new RegExp ('^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$', 'g');
+/*Adresse postale*/
+const regexAddress = new RegExp (/^[0-9a-zA-Z\s,.'-çñàéèêëïîôüù]{3,}$/);
+/*Nom, prénom et ville*/
+const regexInfos = new RegExp ('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]{2,}$');
+
+
+//1. on déclare les données du formulaire dans un objet//
+    // dans ce formulaire, virgule ,, résultat = l'objet est bien dans la variable // 
+let firstName = document.getElementById("firstName");
+let lastName = document.getElementById("lastName");
+let address = document.getElementById("address");
+let city = document.getElementById("city");
+let email = document.getElementById("email");
+
+    // Déclarer des varaibles de message d'erreur + ajouter de la couleur du texte // 
+let firstNameErrorMessage = document.getElementById("firstNameErrorMsg");
+    firstNameErrorMessage.style.color = "red";
+let lastNameErrorMessage = document.getElementById("lastNameErrorMsg");
+    lastNameErrorMessage.style.color = "red";
+let addressErrorMessage = document.getElementById("addressErrorMsg");
+    addressErrorMessage.style.color = "red";
+let cityErrorMessage = document.getElementById("cityErrorMsg");
+    cityErrorMessage.style.color = "red";
+let emailErrorMessage = document.getElementById("emailErrorMsg");
+    emailErrorMessage.style.color = "red"
+
+    // On déclare les values du formulaires dans un objet // 
+let firsNameValue, lastNameValue, addressValue, cityValue, emailValue;
+
+// 2. Contrôle de la validité  //
+
+    // Prénom // 
+
+// addEventListner type:input , function(défault "e") //  
+firstName.addEventListener("input", function(e) {
+    firsNameValue;
+        // s'il n'y a pas de valeur dans input firsName, on rend le résultat null//
+        // target , c'est une référence à l'objet qui a envoyé l'événement. e.target se réfère à l'élément input cliqué, il se déclenchera pour chaque input firstname clické//
+        if(e.target.value.length === 0) {
+            firsNameValue = null;
+            console.log(firsNameValue)
+        } else if (e.target.value.length < 2 || e.target.value.length > 25){
+            firstNameErrorMessage.innerHTML = `entre 2-25`
+            firsNameValue = null;
+        }
+        //Match : méthode, permet d'obtenir le tableau des correspondances entre la chaine courante et une expression rationnelle(regex)//
+        if(e.target.value.match(regexFirstLastName)){
+            firsNameValue = e.target.value;
+            console.log("ok");
+            console.log("firstNameValue");
+        }
+    });
+
 })
+
+
 
 /* -----------------------개념정리=--------------------------
 //element.closet() : permettre de cibler le produit que vs souhaitez supprimer où dont vs souhaitez modifier la quantité 
@@ -244,5 +310,27 @@ function deleteProductDansPanier (){
 
 
 
+// page produit , panier , mettre en oeuvre quantité +100 // 
+// modification quantité , +100 à bloquer
+// regex,,, même si le fourmulaire est rempli,  si je n'ai pas de produit, bloquer la commande //
+// message d'alerte à faire apparaître , 
+// prénom , nom : lettre, espace , - , prénom composé et nom composé 
+// adresse : on accepte tt
+// ville : lettre
+// email : type @xx.xxx
+// s'il y a une case non remplie, alerte sera envoyé 
+// 
 
-
+//expliquer ce que c'est le plan de test , prendre un exemple pour montrer ,
+// pourquoi j'ai codé comme ça ? , pourquoi pas d'autre moyens ?
+// Comment présenter le P5, 
+// rappel du contexte, montrer le site en direct , on montre catalogue, choisir un canap, choisir une couleur sans quantité en fait tt les possibilités ,
+// envoi localstorage également tt les possibilités, (ex, au dessus de 100, )
+// panier ( 2 lignes même canap avec 2 lignes diffé ) 
+// modif, suppression
+// champs de saisies alerte , alerte , si bien fonctionne , tt les possibilités de bloquer 
+// une fois commandé, LS doit être vide
+// plan de test à expliquer : à suivre l'ordre du fichier 
+// Expliquer le code : script : remonter de catalogue , produit : surtout LS, , Panier : tt les functionalités , envoi du formulaire 
+// si je fais PowerPoint : pour le code , à mettre l'accent sur les points 
+// PW :si je le fais;  à mettre des mots clés ++ grands axes à expliquer
