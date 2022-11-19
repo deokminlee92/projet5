@@ -92,18 +92,17 @@ fetch('http://localhost:3000/api/products/')
     // Injection du nouveau code html dans le DOM
     document.querySelector('#cart__items').innerHTML = canapeList;
 
-    //---------------------------------Fun de l'affichage des produits du paneir-----------------------------------//
-
+    //---------------------------Fin l'affichage des produit panier-----------------------------------//
 
     // Création d'un tableau products contenant les id des produits dans le panier pour effectuer la requête POST sur l’API 
-    let CreationNewProductId = [];
+    let produits = [];
     for ( i = 0; i < produitDansLocalStorage.length; i++){
         _id = produitDansLocalStorage[i]._id;
         // on ajoute _id = productInfo[i]._id dans le tableau
-        CreationNewProductId.push(_id);
+        produits.push(_id);
     }
     // transformer en chaîne de caractère pour le rendre exploitable//
-    localStorage.setItem("CreationNewProductId", JSON.stringify(CreationNewProductId));
+    localStorage.setItem("produits", JSON.stringify(produits));
 
 //---------------------------------Création du btn Supprimer-----------------------------------//
 
@@ -180,7 +179,7 @@ function deleteProductDansPanier (){
             }
             //si la valeur saisie est 0 mais plusieurs types de canapés sont présents dans LS
             else if(zeroQuantity.value == 0 && savedProductNumber > 1) {
-                creatArrayMultiProducts = CreationNewProductId.filter((cana) =>
+                creatArrayMultiProducts = produits.filter((cana) =>
                 {
                     if(rechercheIdToDelete.dataset.id != cana._id || rechercheIdToDelete.color != cana.couleur){
                         return true;
@@ -237,11 +236,11 @@ handle change
 /* Nom & Prénom */
 const regexFirstLastName = new RegExp (/^[a-z A-Zàâäéèêëïîôöùûüç-]{2,25}$/);
 /*Adresse mail*/
-const regexEmail = new RegExp ('^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$', 'g');
+const regexEmail = new RegExp ('/^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/');
 /*Adresse postale*/
-const regexAddress = new RegExp (/^[0-9a-zA-Z\s,.'-çñàéèêëïîôüù]{3,}$/);
+const regexAddress = new RegExp (/^[0-9 a-z A-Zàâäéèêëïîôöùûüç,/\- ]{2,80}$/);
 /*Nom, prénom et ville*/
-const regexInfos = new RegExp ('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]{2,}$');
+const regexInfos = new RegExp (/^[a-z A-Zàâäéèêëïîôöùûüç]{2,40}$/);
 
 
 //1. on déclare les données du formulaire dans un objet//
@@ -265,33 +264,242 @@ let emailErrorMessage = document.getElementById("emailErrorMsg");
     emailErrorMessage.style.color = "red"
 
     // On déclare les values du formulaires dans un objet // 
-let firsNameValue, lastNameValue, addressValue, cityValue, emailValue;
+let firstNameValue, lastNameValue, addressValue, cityValue, emailValue;
 
 // 2. Contrôle de la validité  //
 
     // Prénom // 
 
-// addEventListner type:input , function(défault "e") //  
-firstName.addEventListener("input", function(e) {
-    firsNameValue;
-        // s'il n'y a pas de valeur dans input firsName, on rend le résultat null//
+    // addEventListner type:input , function(défault "e") //  
+    // type input est déclenché de façon synchrone quand la valeur d'un élément input est modifiée.
+    firstName.addEventListener("input", function(e) {
+        firstNameValue;
+        // s'il n'y a pas de valeur dans input firstName, on rend le résultat null//
         // target , c'est une référence à l'objet qui a envoyé l'événement. e.target se réfère à l'élément input cliqué, il se déclenchera pour chaque input firstname clické//
         if(e.target.value.length === 0) {
-            firsNameValue = null;
-            console.log(firsNameValue)
-        } else if (e.target.value.length < 2 || e.target.value.length > 25){
-            firstNameErrorMessage.innerHTML = `entre 2-25`
-            firsNameValue = null;
-        }
-        //Match : méthode, permet d'obtenir le tableau des correspondances entre la chaine courante et une expression rationnelle(regex)//
-        if(e.target.value.match(regexFirstLastName)){
-            firsNameValue = e.target.value;
-            console.log("ok");
-            console.log("firstNameValue");
-        }
+            firstNameValue = null;
+            return false;
+            // console.log(firstNameValue);
+            // console.log("firstNameValue")
+            //si le nombre de lettre est inférieur à 2 et supérieur à 20, on envoie le message d'erreur//
+            } else if (e.target.value.length < 2 || e.target.value.length > 25){
+                firstNameErrorMessage.innerHTML = `entre 2-25`
+                firstNameValue = null;
+                return false;
+            }
+                //Match : méthode, permet d'obtenir le tableau des correspondances entre la chaine courante et une expression rationnelle(regex)//
+                //si la valeur saisie corresponde à la restriction Regex, ok on accepte,
+                if(e.target.value.match(regexFirstLastName)){
+                    //on envoie la valeur saisie// 
+                    firstNameValue = e.target.value;
+                    firstNameErrorMessage.innerHTML = "";
+                    return true;
+                    // console.log("ok");
+                    // console.log("firstNameValue");
+                }
+        
     });
 
+    // Nom // 
+
+    // addEventListner type:input , function(défault "e") // 
+    lastName.addEventListener("input", function(e){
+        lastNameValue;
+        if(e.target.value.length ===0) {
+            lastNameValue = null;
+            return false;
+            // console.log(lastNameValue);
+            // console.log("lastNameValue");
+        } else if (e.target.value.length < 2 || e.target.value.length > 20){
+            lastNameErrorMessage.innerHTML = `entre 2-20`;
+            lastNameValue = null;
+            return false;
+
+        } 
+            if(e.target.value.match(regexFirstLastName)){
+                lastNameValue = e.target.value;
+                lastNameErrorMessage.innerHTML = "";
+                return true;
+                // console.log("ok");
+                // console.log("lastNameValue");
+            }
+
+    });
+
+    // Adresse // 
+
+    address.addEventListener("input", function(e){
+        addressValue;
+        if(e.target.value.length === 0 ){
+            addressValue = null;
+            return false;
+            // console.log(addressValue);
+            // console.log("addressValue");
+            }else if(e.target.value.length < 2 || e.target.value.length > 80){
+                addressErrorMessage.innerHTML = "entre 2-80";
+                addressValue = null;
+                return false;
+            }
+                if(e.target.value.match(regexAddress)){
+                    addressErrorMessage.innerHTML= "";
+                    addressValue = e.target.value;
+                    return true;
+                    // console.log(addressValue);
+                    // console.log("addressValue");
+                }
+            
+    });
+
+    // Ville //
+    
+    city.addEventListener("input", function(e){
+        cityValue;
+        if(e.target.value.length === 0 ){
+            cityValue = null;
+            return false;
+            // console.log(cityValue);
+            // console.log("cityValue");
+        }   else if(e.target.value.length<2  || e.target.value.length > 40){
+            cityErrorMessage.innerHTML = "entre 2-40";
+            cityValue = null;
+            return false;
+        }
+            if(e.target.value.match(regexInfos)){
+                cityErrorMessage.innerHTML = "";
+                cityValue = e.target.value;
+                return true;
+                // console.log(cityValue);
+                // console.log("cityValue");
+            }
+        
+    });
+
+        // email //
+    
+        email.addEventListener("input", function(e){
+            emailValue;
+            if(e.target.value.length === 0 ){
+                emailErrorMessage.innerHTML = "Veuillez saisir une adresse email";
+                emailValue = null;
+                return false;
+                // console.log(emailValue);
+                // console.log("emailValue");
+            }   else if(e.target.value.match(regexEmail)){
+                emailErrorMessage.innerHTML = "";
+                emailValue = e.target.value;
+                return true;
+                // console.log(emailValue);
+                // console.log("emailValue");
+
+            }
+                if(!e.target.value.match(regexEmail) && !e.target.value.length ===0 ) {
+                    emailErrorMessage.innerHTML = "Veuillez saisir une adresse e-mail (Ex. ads@mail.com";
+                    emailValue = null;
+                    return false;
+                }
+            
+        });
+
+        addEventListener("sumit", function(e){
+            e.preventDefault();
+            console.log("??");
+        })
+
+    //---------------------------------Fin Formulaire-----------------------------------//
+
+    //***************************Debut Contrôle btn  Commander***************************//
+
+// Créer l'envoi des info au click sur le bouton "Commander"
+let clickBtnCommander = document.getElementById('order');
+
+// Créer l'évènement "click"
+
+clickBtnCommander.addEventListener("click", (e) => {
+    e.preventDefault();
+    let firstNameCommander = document.getElementById("firstName").value;
+    let lastNameCommander = document.getElementById("lastName").value;
+    let addressCommander = document.getElementById("address").value;
+    let cityCommander = document.getElementById("city").value;
+    let emailCommander = document.getElementById("email").value;
+
+    if (
+        !firstNameCommander ||
+        !lastNameCommander ||
+        !addressCommander ||
+        !cityCommander ||
+        !emailCommander
+    )
+        alert("Erreur détectée");
+        return null;
+
+    })
+
+    
+
+
+
+    //--------------------------------Fin Contrôle btn  Commander-----------------------------------//  
+
+
+    //***************************Debut Envoi vers le Serveur***************************//
+
+    // // Création d'un tableau products contenant les id des produits dans le panier pour effectuer la requête POST sur l’API 
+    // let produits = [];
+    // for ( i = 0; i < produitDansLocalStorage.length; i++){
+    //     _id = produitDansLocalStorage[i]._id;
+    //     // on ajoute _id = productInfo[i]._id dans le tableau
+    //     produits.push(_id);
+    // }
+    // // transformer en chaîne de caractère pour le rendre exploitable//
+    // localStorage.setItem("produits", JSON.stringify(produits));
+
+
+
+    const promise01 = fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(_id),
+            });
+            console.log("promise01");
+            console.log(promise01);
+
+    //Pour voir le résultat
+    promise01.then(async(response) => {
+        try{
+            console.log("response");
+            console.log(response);
+            const contenu = await response.json();
+            console.log("contenu");
+            console.log(contenu);
+
+        }catch(e){
+            console.log(e);
+        }
+    })
+
+    //pour voir ce qu'il y a réellement sur le serveur
+    const promise02 = fetch("http://localhost:3000/api/products/order")
+    promise02.then(async (response) =>{
+        try{
+            console.log("promise02");
+            console.log(promise02);
+            const donneeSurServeur = await response.json()
+            console.log("donneeSurServeur");
+            console.log(donneeSurServeur);
+
+        } catch(e){
+            console.log(e);
+        }
+    }) 
+
+
+    //--------------------------------Fin Serveur-----------------------------------//  
+
+// last fermeture
 })
+
 
 
 
@@ -310,27 +518,27 @@ firstName.addEventListener("input", function(e) {
 
 
 
-// page produit , panier , mettre en oeuvre quantité +100 // 
+// page produit , panier , mettre en oeuvre quantité +100 
 // modification quantité , +100 à bloquer
 // regex,,, même si le fourmulaire est rempli,  si je n'ai pas de produit, bloquer la commande //
 // message d'alerte à faire apparaître , 
 // prénom , nom : lettre, espace , - , prénom composé et nom composé 
 // adresse : on accepte tt
-// ville : lettre
+//  ville : lettre
 // email : type @xx.xxx
-// s'il y a une case non remplie, alerte sera envoyé 
-// 
+//  s'il y a une case non remplie, alerte sera envoyé 
 
-//expliquer ce que c'est le plan de test , prendre un exemple pour montrer ,
-// pourquoi j'ai codé comme ça ? , pourquoi pas d'autre moyens ?
-// Comment présenter le P5, 
-// rappel du contexte, montrer le site en direct , on montre catalogue, choisir un canap, choisir une couleur sans quantité en fait tt les possibilités ,
-// envoi localstorage également tt les possibilités, (ex, au dessus de 100, )
-// panier ( 2 lignes même canap avec 2 lignes diffé ) 
-// modif, suppression
-// champs de saisies alerte , alerte , si bien fonctionne , tt les possibilités de bloquer 
-// une fois commandé, LS doit être vide
-// plan de test à expliquer : à suivre l'ordre du fichier 
-// Expliquer le code : script : remonter de catalogue , produit : surtout LS, , Panier : tt les functionalités , envoi du formulaire 
-// si je fais PowerPoint : pour le code , à mettre l'accent sur les points 
-// PW :si je le fais;  à mettre des mots clés ++ grands axes à expliquer
+
+// /* expliquer ce que c'est le plan de test , prendre un exemple pour montrer ,
+// // pourquoi j'ai codé comme ça ? , pourquoi pas d'autre moyens ?
+// // Comment présenter le P5, 
+// // rappel du contexte, montrer le site en direct , on montre catalogue, choisir un canap, choisir une couleur sans quantité en fait tt les possibilités ,
+// // envoi localstorage également tt les possibilités, (ex, au dessus de 100, )
+// // panier ( 2 lignes même canap avec 2 lignes diffé ) 
+// // modif, suppression
+// // champs de saisies alerte , alerte , si bien fonctionne , tt les possibilités de bloquer 
+// // une fois commandé, LS doit être vide
+// // plan de test à expliquer : à suivre l'ordre du fichier 
+// // Expliquer le code : script : remonter de catalogue , produit : surtout LS, , Panier : tt les functionalités , envoi du formulaire 
+// // si je fais PowerPoint : pour le code , à mettre l'accent sur les points 
+// / PW :si je le fais;  à mettre des mots clés ++ grands axes à expliquer
